@@ -10,12 +10,12 @@ setuptools.setup(
      description="Provides visual performance overview of scripts",
      long_description=long_description,
    long_description_content_type="text/markdown",
-     url="www.google.de",
+     url="https://github.com/fior-di-latte/performance_graph",
      packages=['performance_graph'],
     install_requires=['gprof2dot'],
      classifiers=[
          "Programming Language :: Python :: 3",
          "License :: OSI Approved :: MIT License",
-         "Operating System :: OS Independent",
+         "Operating System :: Unix based OS",
      ],
  )
