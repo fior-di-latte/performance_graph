@@ -9,7 +9,7 @@ from path import Path
 def make_graph(args, opt_folder, output_fn):
        # create graph picture
        system(f'python -m cProfile -o profile {args.fn}; '  # profiling
-              f'gprof2dot -f pstats -p  {getcwd()} {opt_folder} -e 0.2 -n 0.5 -o graph.dot profile; '  # graph
+              f'gprof2dot -f pstats -p  {getcwd()} {opt_folder} -e 0.05 -n 0.5 -o graph.dot profile; '  # graph
               f'dot graph.dot -Tpng -o {output_fn} ; '  # export to png
               f'rm profile graph.dot')  # delete everything except output
 
