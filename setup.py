@@ -3,7 +3,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 setuptools.setup(
      name='performance_graph',
-     version='0.1.3',
+     version='0.1.4',
      author="Felix Plagge",
      scripts=['performance_graph/performance_graph'],
      author_email="felix.plagge@gmail.com",

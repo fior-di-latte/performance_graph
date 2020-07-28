@@ -2,18 +2,47 @@
 
 import argparse
 from os import system, getcwd
-from os.path import exists
+from os.path import exists, isfile
 from datetime import datetime
 from path import Path
 
-def make_graph(args, opt_folder, output_fn):
+def make_graph(input_str, opt_folder, output_fn, root_module):
        # create graph picture
-       system(f'python -m cProfile -o profile {args.fn}; '  # profiling
-              f'gprof2dot -f pstats -p  {getcwd()} {opt_folder} -e 0.05 -n 0.5 -o graph.dot profile; '  # graph
+       system(f'python -m cProfile -o profile {input_str}; '  # profiling
+              f'gprof2dot -f pstats -p  {getcwd()} {opt_folder} -e 0.05 -n 0.5 --root="{root_module}" -o graph.dot profile; '  # graph
               f'dot graph.dot -Tpng -o {output_fn} ; '  # export to png
               f'rm profile graph.dot')  # delete everything except output
 
+
+def get_root_module_name(input_str):
+    line_no = _find_start_of_python(file_name=input_str)
+    return f"{script_stem}:{line_no}:<module>"
+
+
+def _find_start_of_python(file_name):
+    searching = True
+    counter = 0
+    with open(file_name, "r") as file:
+        while searching:
+            counter += 1
+            line = file.readline()
+
+            if _check(line):
+                searching = False
+    return counter
+
+def _check(line):
+    comment = line.strip().startswith("#")
+    space = True if line == "\n" else False
+
+    if comment or space:
+        return False
+    else:
+        return True
+
+
 if __name__== '__main__':
+
        # current time
        time = str(datetime.now()).split('.')[0].split(' ')
        time = '-'.join(time)[:-3]
@@ -24,11 +53,14 @@ if __name__== '__main__':
        args = parser.parse_args()
        input_str = args.fn               # target file name w/o parent folder
        entire_path = Path(getcwd()) / input_str
-       script_name = str(entire_path.name)
+       script_name, script_stem = str(entire_path.name), entire_path.stem
        assert exists(entire_path), 'Input file not found.'
        folder = input_str[:-len(script_name)-1]
        opt_folder = f'-p {folder}' if len(folder) > 1 else ""
+       root_module = get_root_module_name(input_str)
+
        output_fn = f'{entire_path.parent / script_name.split(".")[0]}-{time}.png'     # file name of output png
-       make_graph(args, opt_folder, output_fn)            # invoke make_graph fn
-       print(f"Saved the project graph in folder {opt_folder}")
+       make_graph(input_str, opt_folder, output_fn, root_module)            # invoke make_graph fn
+       if isfile(output_fn):
+            print(f"Saved the project graph in folder {opt_folder}")
        # TODO readme
