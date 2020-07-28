@@ -12,7 +12,7 @@ setuptools.setup(
      long_description_content_type="text/markdown",
      url="https://github.com/fior-di-latte/performance_graph",
      packages=['performance_graph'],
-     install_requires=['gprof2dot'],
+     install_requires=['gprof2dot', 'path'],
      classifiers=[
          "Programming Language :: Python :: 3",
          "License :: OSI Approved :: MIT License",

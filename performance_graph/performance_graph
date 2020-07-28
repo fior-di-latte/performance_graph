@@ -13,7 +13,6 @@ def make_graph(args, opt_folder, output_fn):
               f'dot graph.dot -Tpng -o {output_fn} ; '  # export to png
               f'rm profile graph.dot')  # delete everything except output
 
-#TODO make script usable without .py
 if __name__== '__main__':
        # current time
        time = str(datetime.now()).split('.')[0].split(' ')
@@ -31,7 +30,4 @@ if __name__== '__main__':
        opt_folder = f'-p {folder}' if len(folder) > 1 else ""
        output_fn = f'{entire_path.parent / script_name.split(".")[0]}-{time}.png'     # file name of output png
        make_graph(args, opt_folder, output_fn)            # invoke make_graph fn
-
-       # TODO make sure gprof2dot is in the dependencies, specify versions
        # TODO readme
-       #--root="main_copy:9:<module>"
