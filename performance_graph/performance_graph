@@ -25,6 +25,7 @@ def _get_root_module_name(input_str):
 def _find_start_of_python(file_name):
     searching = True
     counter = 0
+
     with open(file_name, "r") as file:
         while searching:
             counter += 1
@@ -36,12 +37,20 @@ def _find_start_of_python(file_name):
 
 def _check(line):
     comment = line.strip().startswith("#")
-    space = True if line.strip() == "\n" else False
+    space = True if (line.strip() == "\n") or (line == "\n") else False
 
-    if comment or space:
+    global DOCSTRING_COUNTER
+
+    if line.strip().startswith('"""'):
+        DOCSTRING_COUNTER += 1
+
+    if DOCSTRING_COUNTER % 2 == 1:
         return False
     else:
-        return True
+        if comment or space:
+            return False
+        else:
+            return True
 
 def _path_string():
     top_lvl = [ f.split(".")[0] for f in glob.glob("*.py")]
@@ -52,7 +61,8 @@ def _path_string():
 
 
 if __name__== '__main__':
-
+       DOCSTRING_COUNTER = 0
+       print(DOCSTRING_COUNTER)
        # current time
        time = str(datetime.now()).split('.')[0].split(' ')
        time = '-'.join(time)[:-3]
