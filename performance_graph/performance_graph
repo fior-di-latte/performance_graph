@@ -18,7 +18,6 @@ def make_graph(input_str, output_fn, root_module, path_string):
 
 
 def _get_root_module_name(input_str_as_file_path):
-    print(input_str_as_file_path)
     line_no = _find_start_of_python(file_name=input_str_as_file_path)
     return f"{script_stem}:{line_no}:<module>"
 
@@ -87,8 +86,7 @@ if __name__== '__main__':
        output_fn = f'{entire_path.parent / script_name.split(".")[0]}-{time}.png'     # file name of output png
        if args.m:
            input_str = '-m ' + input_str
-           print(input_str)
-       print(input_str)
+
        make_graph(input_str, output_fn, root_module, path_string)            # invoke make_graph fn
 
        if isfile(output_fn):
