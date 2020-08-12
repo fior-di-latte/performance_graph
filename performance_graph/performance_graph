@@ -67,28 +67,29 @@ if __name__== '__main__':
        time = '-'.join(time)[:-3]
        # TODO enhance arparser
        # CLI interface
-       parser = argparse.ArgumentParser(description='Enter file name. Use this script from project root.')
+       parser = argparse.ArgumentParser(description='Enter file name. Use this script from project root. If the script consumes arguments, QUOTATION MARKS, i.e. "module name <arg1> <arg2>"')
        parser.add_argument('fn', help='specify file', type=str)
-       parser.add_argument('-m', action='store_true', help='execute a python module with optional argument(s). USE QUOTATION MARKS for specifying the script and its options')
+       parser.add_argument('-m', action='store_true', help='Enter a python module instead of a script. If the module consumes arguments, QUOTATION MARKS, i.e. "module name <arg1> <arg2>"')
        args = parser.parse_args()
        input_str = args.fn
-       # target file name w/o parent folder
+       # in case of a module profile, identify the scripts path
        if args.m:
            input_str_as_file_path = input_str.split(' ')[0] + '.py'
        else:
-           input_str_as_file_path = input_str
+           input_str_as_file_path = input_str.split(' ')[0]
+       # --- prepare input for make_graph - function ---
        entire_path = Path(getcwd()) / input_str_as_file_path
        script_name, script_stem = str(entire_path.name), entire_path.stem
        assert exists(entire_path), 'Input file not found.'
        folder = input_str[:-len(script_name)-1]
        path_string = _path_string()
        root_module = _get_root_module_name(input_str_as_file_path)
-       output_fn = f'{entire_path.parent / script_name.split(".")[0]}-{time}.png'     # file name of output png
+       output_fn = f'{entire_path.parent / script_name.split(".")[0]}-{time}.png'  # file name of output png
        if args.m:
            input_str = '-m ' + input_str
-
-       make_graph(input_str, output_fn, root_module, path_string)            # invoke make_graph fn
-
+       # --- call make_graph ---
+       make_graph(input_str, output_fn, root_module, path_string)
+       # Check if output exists
        if isfile(output_fn):
             print(f"Saved the project graph as {output_fn}")
-       # TODO readme
+
