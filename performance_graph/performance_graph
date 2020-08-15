@@ -52,6 +52,8 @@ def _check(line):
 
     if line.strip().startswith('"""'):
         DOCSTRING_COUNTER += 1
+        if line.strip().endswith('"""'):
+            DOCSTRING_COUNTER += 1
 
     if DOCSTRING_COUNTER % 2 == 1:
         return False
@@ -61,10 +63,11 @@ def _check(line):
         else:
             return True
 
-def _path_string():
+def _path_string(extra_modules):
     top_lvl = [ f.split(".")[0] for f in glob.glob("*.py")]
     dirs = [os.path.basename(os.path.dirname(d)) for d in glob.glob(f"{os.getcwd()}/*/")]
-    modules = top_lvl + dirs
+    more = [str(Path(__import__(module).__file__).parent) for module in extra_modules]
+    modules = top_lvl + dirs + more
     return " -p ".join(modules)
 
 
@@ -81,6 +84,7 @@ if __name__== '__main__':
        parser.add_argument('-m', action='store_true', help='Enter a python module instead of a script. If the module consumes arguments, QUOTATION MARKS, i.e. "module name <arg1> <arg2>"')
        parser.add_argument('-a', action='store_true',
                            help='Create an unfiltered graph.')
+       parser.add_argument('-x', action='append', type=str, help='Enter external modules that will be shown')
        args = parser.parse_args()
        input_str = args.fn
        # in case of a module profile, identify the scripts path
@@ -93,7 +97,7 @@ if __name__== '__main__':
        script_name, script_stem = str(entire_path.name), entire_path.stem
        assert exists(entire_path), 'Input file not found.'
        folder = input_str[:-len(script_name)-1]
-       path_string = _path_string()
+       path_string = _path_string(args.x)
        root_module = _get_root_module_name(input_str_as_file_path)
        output_fn = f'{entire_path.parent / script_name.split(".")[0]}-{time}.png'  # file name of output png
        if args.m:
