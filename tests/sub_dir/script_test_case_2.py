@@ -9,7 +9,7 @@ def foo():
 def bar():
     time.sleep(0.4)
 
-goodnight()
-for i in range(10):
-    foo()
-bar()
+#goodnight()
+#for i in range(10):
+#    foo()
+#bar()

@@ -11,10 +11,19 @@ from path import Path
 def make_graph(input_str, output_fn, root_module, path_string):
        # create graph picture
        # TODO use pipes
-       system(f'python -m cProfile -o profile {input_str}; '  # profiling
-              f'gprof2dot -f pstats -p {path_string} -p {getcwd()} -e 0.05 -n 0.5 --root "{root_module}"  -o graph.dot profile; '  # graph
-              f'dot graph.dot -Tpng -o {output_fn} ; '  # export to png
+       system(f'python -m cProfile -o profile {input_str} && '  # profiling
+              f'gprof2dot -f pstats -p {path_string} -p {getcwd()} -e 0.05 -n 0.5 --root "{root_module}"  -o graph.dot profile && '  # graph
+              f'dot graph.dot -Tpng -o {output_fn}  && '  # export to png
               f'rm profile graph.dot')  # delete everything except output
+
+
+def make_graph_all(input_str, output_fn):
+    # create graph picture
+    # TODO use pipes
+    system(f'python -m cProfile -o profile {input_str} && '  # profiling
+           f'gprof2dot -f pstats  -o graph.dot profile && '  # graph
+           f'dot graph.dot -Tpng -o {output_fn}  && '  # export to png
+           f'rm profile graph.dot')  # delete everything except output
 
 
 def _get_root_module_name(input_str_as_file_path):
@@ -70,6 +79,8 @@ if __name__== '__main__':
        parser = argparse.ArgumentParser(description='Enter file name. Use this script from project root. If the script consumes arguments, QUOTATION MARKS, i.e. "module name <arg1> <arg2>"')
        parser.add_argument('fn', help='specify file', type=str)
        parser.add_argument('-m', action='store_true', help='Enter a python module instead of a script. If the module consumes arguments, QUOTATION MARKS, i.e. "module name <arg1> <arg2>"')
+       parser.add_argument('-a', action='store_true',
+                           help='Create an unfiltered graph.')
        args = parser.parse_args()
        input_str = args.fn
        # in case of a module profile, identify the scripts path
@@ -88,7 +99,10 @@ if __name__== '__main__':
        if args.m:
            input_str = '-m ' + input_str
        # --- call make_graph ---
-       make_graph(input_str, output_fn, root_module, path_string)
+       if args.a:
+           make_graph_all(input_str,output_fn)
+       else:
+           make_graph(input_str, output_fn, root_module, path_string)
        # Check if output exists
        if isfile(output_fn):
             print(f"Saved the project graph as {output_fn}")
