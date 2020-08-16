@@ -66,7 +66,7 @@ def _check(line):
 def _path_string(extra_modules):
     top_lvl = [ f.split(".")[0] for f in glob.glob("*.py")]
     dirs = [os.path.basename(os.path.dirname(d)) for d in glob.glob(f"{os.getcwd()}/*/")]
-    more = [str(Path(__import__(module).__file__).parent) for module in extra_modules]
+    more = [str(Path(__import__(module).__file__).parent) for module in extra_modules] if extra_modules else []
     modules = top_lvl + dirs + more
     return " -p ".join(modules)
 
