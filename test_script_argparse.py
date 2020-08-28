@@ -1,7 +1,4 @@
-#
-""" sheeesh"""
 
-## mm
 import argparse
 import time
 from tests.sub_dir.subsub_dir.helper import  goodnight
@@ -9,11 +6,11 @@ import pandas
 
 df = pandas.DataFrame([[3,4,5]*100, [5,2,1]*100])
 df.apply(lambda x: x**3)
-def foo():
-    time.sleep(0.1)
+def sleep_one_seconds():
+    time.sleep(1)
 
-def bar():
-    time.sleep(0.4)
+def sleep_two_seconds():
+    time.sleep(2)
 
 goodnight()
 
